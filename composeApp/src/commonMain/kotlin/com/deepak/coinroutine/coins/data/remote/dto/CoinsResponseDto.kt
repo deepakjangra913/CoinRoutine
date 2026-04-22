@@ -18,7 +18,7 @@ data class CoinItemDto(
     val symbol: String,
     val name: String,
     val iconUrl: String,
-    val price: String,
+    val price: Double,
     val rank: String,
     val change: Double
 )
