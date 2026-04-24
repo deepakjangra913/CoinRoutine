@@ -1,5 +1,6 @@
 package com.deepak.coinroutine.core.network
 
+import com.deepak.coinroutine.core.domain.getApiToken
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.plugins.HttpTimeout
@@ -28,8 +29,7 @@ object HttpClientFactory {
             }
             install(HttpCache)
             defaultRequest {
-                // TODO (We'll add api key with secured option)
-                headers { append("x-access-token", "") }
+                headers { append("x-access-token", getApiToken()) }
                 contentType(ContentType.Application.Json)
             }
         }

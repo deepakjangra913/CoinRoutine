@@ -1,6 +1,7 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -11,6 +12,13 @@ plugins {
     alias(libs.plugins.room)
     alias(libs.plugins.ksp)
 }
+
+val localProperties = Properties().apply {
+    load(rootProject.file("local.properties").inputStream())
+}
+
+val token: String = localProperties.getProperty("API_TOKEN")
+    ?: throw GradleException("API_TOKEN not found in local.properties")
 
 kotlin {
     androidTarget {
@@ -78,12 +86,18 @@ android {
     namespace = "com.deepak.coinroutine"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
+    buildFeatures {
+        buildConfig = true
+    }
+
     defaultConfig {
         applicationId = "com.deepak.coinroutine"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
         versionName = "1.0"
+
+        buildConfigField("String", "API_TOKEN", "\"$token\"")
     }
     packaging {
         resources {

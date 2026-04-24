@@ -1,9 +1,17 @@
 package com.deepak.coinroutine.di
 
+import com.deepak.coinroutine.coins.data.remote.impl.KtorCoinsRemoteDataSource
+import com.deepak.coinroutine.coins.domain.GetCoinDetailsUseCase
+import com.deepak.coinroutine.coins.domain.GetCoinsListUseCase
+import com.deepak.coinroutine.coins.domain.api.CoinsRemoteDataSource
+import com.deepak.coinroutine.coins.presentation.CoinsListViewModel
 import com.deepak.coinroutine.core.network.HttpClientFactory
 import org.koin.core.context.startKoin
 import org.koin.core.module.Module
+import org.koin.core.module.dsl.singleOf
+import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.KoinAppDeclaration
+import org.koin.dsl.bind
 import org.koin.dsl.module
 
 fun initKoin(
@@ -21,5 +29,12 @@ expect val platformModule: Module
 
 val sharedModule = module {
 
+    // core
     single { HttpClientFactory.create(get()) }
+
+    // coins list
+    viewModel { CoinsListViewModel(get()) }
+    singleOf(::GetCoinsListUseCase)
+    singleOf(::KtorCoinsRemoteDataSource).bind<CoinsRemoteDataSource>()
+    singleOf(::GetCoinDetailsUseCase)
 }
