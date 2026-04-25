@@ -1,5 +1,6 @@
 package com.deepak.coinroutine.coins.presentation
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -61,6 +62,7 @@ fun CoinsListContent(
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CoinsList(
     coins: List<UiCoinListItem>,
@@ -77,12 +79,15 @@ fun CoinsList(
             verticalArrangement = Arrangement.spacedBy(space = 8.dp),
             modifier = Modifier.fillMaxSize()
         ) {
-            item {
+            stickyHeader {
                 Text(
-                    "🔥 Top Coins",
+                    text = "🔥 Top Coins",
                     color = MaterialTheme.colorScheme.onBackground,
                     fontSize = MaterialTheme.typography.titleLarge.fontSize,
-                    modifier = Modifier.padding(16.dp)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(color = MaterialTheme.colorScheme.background)
+                        .padding(16.dp)
                 )
             }
             items(items = coins, key = { it.id }) { item ->
