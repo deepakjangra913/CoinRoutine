@@ -6,6 +6,7 @@ import com.deepak.coinroutine.coins.domain.GetCoinsListUseCase
 import com.deepak.coinroutine.core.domain.Result
 import com.deepak.coinroutine.core.util.formatFiat
 import com.deepak.coinroutine.core.util.formatPercentage
+import com.deepak.coinroutine.core.util.toUiText
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.onStart
@@ -32,7 +33,7 @@ class CoinsListViewModel(
                 _state.update {
                     it.copy(
                         coins = emptyList(),
-                        error = null
+                        error = coinsResponse.error.toUiText()
                     )
                 }
             }
