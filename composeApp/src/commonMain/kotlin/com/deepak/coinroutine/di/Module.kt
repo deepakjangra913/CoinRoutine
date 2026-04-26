@@ -2,6 +2,7 @@ package com.deepak.coinroutine.di
 
 import com.deepak.coinroutine.coins.data.remote.impl.KtorCoinsRemoteDataSource
 import com.deepak.coinroutine.coins.domain.GetCoinDetailsUseCase
+import com.deepak.coinroutine.coins.domain.GetCoinPriceHistoryUseCase
 import com.deepak.coinroutine.coins.domain.GetCoinsListUseCase
 import com.deepak.coinroutine.coins.domain.api.CoinsRemoteDataSource
 import com.deepak.coinroutine.coins.presentation.CoinsListViewModel
@@ -33,8 +34,9 @@ val sharedModule = module {
     single { HttpClientFactory.create(get()) }
 
     // coins list
-    viewModel { CoinsListViewModel(get()) }
+    viewModel { CoinsListViewModel(get(), get()) }
     singleOf(::GetCoinsListUseCase)
+    singleOf(::GetCoinPriceHistoryUseCase)
     singleOf(::KtorCoinsRemoteDataSource).bind<CoinsRemoteDataSource>()
     singleOf(::GetCoinDetailsUseCase)
 }
