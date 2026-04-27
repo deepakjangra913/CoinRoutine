@@ -100,4 +100,10 @@ class CoinsListViewModel(
             }
         }
     }
+
+    fun onDismissChart() {
+        _state.update {
+            it.copy(uiChartState = null)
+        }
+    }
 }

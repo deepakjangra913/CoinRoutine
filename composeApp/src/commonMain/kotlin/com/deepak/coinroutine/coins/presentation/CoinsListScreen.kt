@@ -2,7 +2,7 @@ package com.deepak.coinroutine.coins.presentation
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,6 +28,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
+import com.deepak.coinroutine.coins.presentation.component.CoinChartDialog
 import com.deepak.coinroutine.theme.LocalCoinRoutineColorsPalette
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -41,6 +42,12 @@ fun CoinsListScreen(
 
     CoinsListContent(
         state = state,
+        onDismissChart = {
+            coinsListViewModel.onDismissChart()
+        },
+        onCoinLongPressed = { coinId ->
+            coinsListViewModel.onCoinLongPress(coinId)
+        },
         onCoinClicked = onCoinClicked
     )
 }
@@ -48,6 +55,8 @@ fun CoinsListScreen(
 @Composable
 fun CoinsListContent(
     state: CoinsState,
+    onDismissChart: () -> Unit,
+    onCoinLongPressed: (String) -> Unit,
     onCoinClicked: (String) -> Unit
 ) {
     Box(
@@ -55,8 +64,16 @@ fun CoinsListContent(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
+        if (state.uiChartState != null) {
+            CoinChartDialog(
+                uiChartState = state.uiChartState,
+                onDismiss = onDismissChart
+            )
+        }
+
         CoinsList(
             state.coins,
+            onCoinLongPressed = onCoinLongPressed,
             onCoinClicked = onCoinClicked
         )
     }
@@ -66,6 +83,7 @@ fun CoinsListContent(
 @Composable
 fun CoinsList(
     coins: List<UiCoinListItem>,
+    onCoinLongPressed: (String) -> Unit,
     onCoinClicked: (String) -> Unit
 ) {
     Box(
@@ -92,27 +110,34 @@ fun CoinsList(
             }
             items(items = coins, key = { it.id }) { item ->
                 CoinListItem(
-                    coin = item
-                ) {
-
-                }
+                    coin = item,
+                    onCoinClicked = onCoinClicked,
+                    onCoinLongPressed = onCoinLongPressed
+                )
             }
         }
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CoinListItem(
     coin: UiCoinListItem,
+    onCoinLongPressed: (String) -> Unit,
     onCoinClicked: (String) -> Unit
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
-            .clickable {
-                onCoinClicked(coin.id)
-            }
+            .combinedClickable(
+                onLongClick = {
+                    onCoinLongPressed(coin.id)
+                },
+                onClick = {
+                    onCoinClicked(coin.id)
+                }
+            )
             .padding(16.dp)
     ) {
 

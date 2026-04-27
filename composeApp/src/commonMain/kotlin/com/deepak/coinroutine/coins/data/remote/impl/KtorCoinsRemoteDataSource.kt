@@ -1,7 +1,7 @@
 package com.deepak.coinroutine.coins.data.remote.impl
 
 import com.deepak.coinroutine.coins.data.remote.dto.CoinDetailsResponseDto
-import com.deepak.coinroutine.coins.data.remote.dto.CoinPriceHistoryDto
+import com.deepak.coinroutine.coins.data.remote.dto.CoinPriceHistoryResponseDto
 import com.deepak.coinroutine.coins.data.remote.dto.CoinsResponseDto
 import com.deepak.coinroutine.coins.domain.api.CoinsRemoteDataSource
 import com.deepak.coinroutine.core.domain.DataError
@@ -22,7 +22,7 @@ class KtorCoinsRemoteDataSource(
         }
     }
 
-    override suspend fun getPriceHistory(coinId: String): Result<CoinPriceHistoryDto, DataError.Remote> {
+    override suspend fun getPriceHistory(coinId: String): Result<CoinPriceHistoryResponseDto, DataError.Remote> {
         return safeCall {
             httpClient.get("$BASE_URL/coin/$coinId/history")
         }

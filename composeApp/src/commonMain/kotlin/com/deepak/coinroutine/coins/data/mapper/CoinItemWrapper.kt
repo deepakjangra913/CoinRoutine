@@ -18,6 +18,6 @@ fun CoinItemDto.toCoinModel() = CoinModel(
 )
 
 fun CoinPriceDto.toPriceModel() = PriceModel(
-    price = price ?: 0.0,
+    price = price?.toDoubleOrNull() ?: 0.0,
     timeStamp = timeStamp
 )

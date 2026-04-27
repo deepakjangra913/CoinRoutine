@@ -13,7 +13,7 @@ class GetCoinPriceHistoryUseCase(
 
     suspend fun execute(coinId: String): Result<List<PriceModel>, DataError.Remote> {
         return client.getPriceHistory(coinId).map { dto ->
-            dto.history.map {
+            dto.data.history.map {
                 it.toPriceModel()
             }
         }
