@@ -17,6 +17,6 @@ interface PortfolioDao {
     @Query("SELECT * FROM PortfolioCoinEntity WHERE coinId = :coinId")
     suspend fun getCoinById(coinId: String): PortfolioCoinEntity
 
-    @Query("SELECT * FROM PortfolioCoinEntity WHERE coinId = :coinId")
+    @Query("DELETE FROM PortfolioCoinEntity WHERE coinId = :coinId")
     suspend fun deletePortfolioItem(coinId: String)
 }
