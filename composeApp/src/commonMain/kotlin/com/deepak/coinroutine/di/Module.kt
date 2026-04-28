@@ -1,5 +1,6 @@
 package com.deepak.coinroutine.di
 
+import androidx.room.RoomDatabase
 import com.deepak.coinroutine.coins.data.remote.impl.KtorCoinsRemoteDataSource
 import com.deepak.coinroutine.coins.domain.GetCoinDetailsUseCase
 import com.deepak.coinroutine.coins.domain.GetCoinPriceHistoryUseCase
@@ -7,6 +8,8 @@ import com.deepak.coinroutine.coins.domain.GetCoinsListUseCase
 import com.deepak.coinroutine.coins.domain.api.CoinsRemoteDataSource
 import com.deepak.coinroutine.coins.presentation.CoinsListViewModel
 import com.deepak.coinroutine.core.network.HttpClientFactory
+import com.deepak.coinroutine.database.portfolio.PortfolioDatabase
+import com.deepak.coinroutine.database.portfolio.getPortFolioDatabase
 import org.koin.core.context.startKoin
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.singleOf
@@ -32,6 +35,11 @@ val sharedModule = module {
 
     // core
     single { HttpClientFactory.create(get()) }
+
+    // portfolio
+    single {
+        getPortFolioDatabase(get<RoomDatabase.Builder<PortfolioDatabase>>())
+    }
 
     // coins list
     viewModel { CoinsListViewModel(get(), get()) }
