@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 interface PortfolioRepository {
 
     suspend fun initializeBalance()
-    fun getPortFolioCoinsFlow(): Flow<Result<List<PortfolioCoinModel>, DataError.Remote>>
+    fun allPortFolioCoinsFlow(): Flow<Result<List<PortfolioCoinModel>, DataError.Remote>>
     suspend fun getPortfolioCoin(coinId: String): Result<PortfolioCoinModel?, DataError.Remote>
     suspend fun savePortfolioCoin(portfolioCoinModel: PortfolioCoinModel): EmptyResult<DataError.Local>
     suspend fun removeCoinFromPortfolio(coinId: String)
