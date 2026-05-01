@@ -13,7 +13,7 @@ fun CoinItemDto.toCoinModel() = CoinModel(
         symbol = symbol,
         iconUrl = iconUrl,
     ),
-    price = price.toDoubleOrNull() ?: 0.0,
+    price = price,
     change = change.toDoubleOrNull() ?: 0.0
 )
 
