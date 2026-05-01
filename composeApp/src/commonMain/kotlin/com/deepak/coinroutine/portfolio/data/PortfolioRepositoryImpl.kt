@@ -1,5 +1,6 @@
 package com.deepak.coinroutine.portfolio.data
 
+import androidx.sqlite.SQLiteException
 import com.deepak.coinroutine.coins.data.remote.impl.KtorCoinsRemoteDataSource
 import com.deepak.coinroutine.core.domain.DataError
 import com.deepak.coinroutine.core.domain.EmptyResult
@@ -9,12 +10,14 @@ import com.deepak.coinroutine.core.domain.onSuccess
 import com.deepak.coinroutine.portfolio.data.local.PortfolioDao
 import com.deepak.coinroutine.portfolio.data.local.UserBalanceDao
 import com.deepak.coinroutine.portfolio.data.local.UserBalanceEntity
+import com.deepak.coinroutine.portfolio.data.mapper.toPortfolioCoinEntity
 import com.deepak.coinroutine.portfolio.data.mapper.toPortfolioCoinModel
 import com.deepak.coinroutine.portfolio.domain.PortfolioCoinModel
 import com.deepak.coinroutine.portfolio.domain.PortfolioRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 
@@ -85,26 +88,69 @@ class PortfolioRepositoryImpl(
     }
 
     override suspend fun savePortfolioCoin(portfolioCoinModel: PortfolioCoinModel): EmptyResult<DataError.Local> {
-        TODO("Not yet implemented")
+        try {
+            portfolioDao.insert(portfolioCoinModel.toPortfolioCoinEntity())
+            return Result.Success(Unit)
+        } catch (e: SQLiteException) {
+            return Result.Error(DataError.Local.DISK_FULL)
+        }
     }
 
     override suspend fun removeCoinFromPortfolio(coinId: String) {
-        TODO("Not yet implemented")
+        portfolioDao.deletePortfolioItem(coinId)
     }
 
     override fun calculateTotalPortfolioValue(): Flow<Result<Double, DataError.Remote>> {
-        TODO("Not yet implemented")
-    }
-
-    override fun totalBalanceFlow(): Flow<Result<Double, DataError.Remote>> {
-        TODO("Not yet implemented")
+        return portfolioDao.getAllOwnedCoins().flatMapLatest { portfolioCoinEntities ->
+            if (portfolioCoinEntities.isEmpty()) {
+                flow {
+                    emit(Result.Success(0.0))
+                }
+            } else {
+                flow {
+                    val apiResult = coinsRemoteDataSource.getListOfCoins()
+                    apiResult.onError { error ->
+                        emit(Result.Error(error))
+                    }.onSuccess { coinsResponseDto ->
+                        val totalValue = portfolioCoinEntities.sumOf { ownedCoin ->
+                            val coinPrice =
+                                coinsResponseDto.data.coins.find { it.uuid == ownedCoin.coinId }?.price
+                                    ?: 0.0
+                            ownedCoin.amountOwned * coinPrice
+                        }
+                        emit(Result.Success(totalValue))
+                    }
+                }
+            }
+        }.catch {
+            emit(Result.Error(DataError.Remote.UNKNOWN))
+        }
     }
 
     override fun cashBalanceFlow(): Flow<Double> {
-        TODO("Not yet implemented")
+        return flow {
+            emit(userBalanceDao.getCashBalance() ?: 10000.0)
+        }
+    }
+
+    override fun totalBalanceFlow(): Flow<Result<Double, DataError.Remote>> {
+        return combine(
+            cashBalanceFlow(),
+            calculateTotalPortfolioValue()
+        ) { cashBalance, portfolioResult ->
+            when (portfolioResult) {
+                is Result.Error -> {
+                    Result.Error(portfolioResult.error)
+                }
+
+                is Result.Success -> {
+                    Result.Success(cashBalance * portfolioResult.data)
+                }
+            }
+        }
     }
 
     override suspend fun updateCashBalance(newBalance: Double) {
-        TODO("Not yet implemented")
+        userBalanceDao.updateCashBalance(newBalance)
     }
 }
