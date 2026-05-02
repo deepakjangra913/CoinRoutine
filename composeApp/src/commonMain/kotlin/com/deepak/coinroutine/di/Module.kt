@@ -10,6 +10,8 @@ import com.deepak.coinroutine.coins.presentation.CoinsListViewModel
 import com.deepak.coinroutine.core.network.HttpClientFactory
 import com.deepak.coinroutine.database.portfolio.PortfolioDatabase
 import com.deepak.coinroutine.database.portfolio.getPortFolioDatabase
+import com.deepak.coinroutine.portfolio.data.PortfolioRepositoryImpl
+import com.deepak.coinroutine.portfolio.domain.PortfolioRepository
 import org.koin.core.context.startKoin
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.singleOf
@@ -40,6 +42,8 @@ val sharedModule = module {
     single {
         getPortFolioDatabase(get<RoomDatabase.Builder<PortfolioDatabase>>())
     }
+
+    singleOf(::PortfolioRepositoryImpl).bind<PortfolioRepository>()
 
     // coins list
     viewModel { CoinsListViewModel(get(), get()) }
