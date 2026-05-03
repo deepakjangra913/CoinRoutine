@@ -1,6 +1,8 @@
 package com.deepak.coinroutine.portfolio.presentation
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -13,6 +15,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -24,8 +29,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil3.compose.AsyncImage
 import com.deepak.coinroutine.theme.LocalCoinRoutineColorsPalette
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -48,7 +55,11 @@ fun PortfolioScreen(
             )
         }
     } else {
-        PortfolioContent()
+        PortfolioContent(
+            state = state,
+            onCoinItemClicked = onCoinItemClicked,
+            onDiscoverCoinsClicked = onDiscoverCoinsClicked
+        )
     }
 }
 
@@ -71,7 +82,11 @@ fun PortfolioContent(
             showBuyButton = state.showBuyButton,
             onBuyButtonClicked = onDiscoverCoinsClicked
         )
-        PortfolioCoinsList()
+        PortfolioCoinsList(
+            state.coins,
+            onCoinItemClicked = onCoinItemClicked,
+            onDiscoverCoinsClicked = onDiscoverCoinsClicked
+        )
     }
 }
 
@@ -89,16 +104,111 @@ private fun PortfolioCoinsList(
             .background(color = MaterialTheme.colorScheme.background)
     ) {
         if (coins.isEmpty()) {
-            PortfolioEmptyScreen()
+            PortfolioEmptyScreen(
+                onDiscoverCoinsClicked = onDiscoverCoinsClicked
+            )
+            return@Box
         } else {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
             ) {
                 Text(
-                    text =
+                    text = "💰 Owned Coins: ",
+                    color = MaterialTheme.colorScheme.onBackground,
+                    fontSize = MaterialTheme.typography.titleLarge.fontSize,
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(16.dp)
                 )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                LazyColumn(
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    items(coins) { singleCoin ->
+                        CoinListItem(
+                            coin = singleCoin,
+                            onCoinItemClicked = onCoinItemClicked
+                        )
+                    }
+                }
             }
+        }
+    }
+}
+
+@Composable
+fun PortfolioEmptyScreen(onDiscoverCoinsClicked: () -> Unit) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+        modifier = Modifier
+            .fillMaxHeight()
+            .fillMaxWidth()
+            .padding(32.dp)
+    ) {
+        Text(
+            text = "No coins in your portfolio yet.",
+            color = MaterialTheme.colorScheme.primary,
+            fontSize = MaterialTheme.typography.titleSmall.fontSize
+        )
+
+        Button(
+            onClick = onDiscoverCoinsClicked,
+            colors = ButtonDefaults.buttonColors(
+                containerColor = LocalCoinRoutineColorsPalette.current.profitGreen
+            ),
+            contentPadding = PaddingValues(horizontal = 64.dp)
+        ) {
+            Text(
+                text = "Discover coins",
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onPrimary
+            )
+        }
+    }
+}
+
+@Composable
+private fun CoinListItem(
+    coin: UiPortfolioCoinItem,
+    onCoinItemClicked: (String) -> Unit
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable {
+                onCoinItemClicked(coin.id)
+            }
+            .padding(all = 16.dp)
+    ) {
+
+        AsyncImage(
+            model = coin.iconUrl,
+            contentDescription = null,
+            contentScale = ContentScale.Fit,
+            modifier = Modifier.padding(4.dp).clip(CircleShape).size(40.dp)
+        )
+
+        Spacer(modifier = Modifier.width(16.dp))
+
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Text(
+                text = coin.amountInFiatText,
+                color = MaterialTheme.colorScheme.onBackground,
+                fontSize = MaterialTheme.typography.titleMedium.fontSize
+            )
+
+            Spacer(modifier = Modifier.width(4.dp))
+
+            Text(
+                text = coin.performancePercentText,
+                color = if (coin.isPositive) LocalCoinRoutineColorsPalette.current.profitGreen else LocalCoinRoutineColorsPalette.current.lossRed,
+                fontSize = MaterialTheme.typography.titleSmall.fontSize
+            )
         }
     }
 }
