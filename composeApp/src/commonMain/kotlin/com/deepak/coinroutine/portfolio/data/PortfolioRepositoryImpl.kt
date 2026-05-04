@@ -100,6 +100,7 @@ class PortfolioRepositoryImpl(
         portfolioDao.deletePortfolioItem(coinId)
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     override fun calculateTotalPortfolioValue(): Flow<Result<Double, DataError.Remote>> {
         return portfolioDao.getAllOwnedCoins().flatMapLatest { portfolioCoinEntities ->
             if (portfolioCoinEntities.isEmpty()) {
@@ -144,7 +145,7 @@ class PortfolioRepositoryImpl(
                 }
 
                 is Result.Success -> {
-                    Result.Success(cashBalance * portfolioResult.data)
+                    Result.Success(cashBalance + portfolioResult.data)
                 }
             }
         }
