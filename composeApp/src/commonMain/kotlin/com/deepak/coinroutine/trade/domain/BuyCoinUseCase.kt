@@ -12,7 +12,7 @@ class BuyCoinUseCase(
     private val portfolioRepository: PortfolioRepository
 ) {
 
-    suspend fun buyCoin(
+    suspend operator fun invoke(
         coin: Coin,
         amountInFiat: Double,
         price: Double
