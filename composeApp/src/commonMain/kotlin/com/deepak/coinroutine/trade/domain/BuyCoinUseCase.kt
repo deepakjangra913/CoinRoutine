@@ -8,10 +8,23 @@ import com.deepak.coinroutine.portfolio.domain.PortfolioCoinModel
 import com.deepak.coinroutine.portfolio.domain.PortfolioRepository
 import kotlinx.coroutines.flow.first
 
+/**
+ * Use case for purchasing a cryptocurrency and adding it to the user's portfolio.
+ *
+ * @property portfolioRepository The repository to manage portfolio data and balance.
+ */
 class BuyCoinUseCase(
     private val portfolioRepository: PortfolioRepository
 ) {
 
+    /**
+     * Executes the buy transaction.
+     *
+     * @param coin The coin to be purchased.
+     * @param amountInFiat The amount of the coin to buy, specified in fiat currency.
+     * @param price The current market price of the coin.
+     * @return An [EmptyResult] indicating success or [DataError] on failure (e.g., insufficient funds).
+     */
     suspend operator fun invoke(
         coin: Coin,
         amountInFiat: Double,

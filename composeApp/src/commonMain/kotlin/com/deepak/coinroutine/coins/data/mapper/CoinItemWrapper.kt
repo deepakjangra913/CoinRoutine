@@ -6,6 +6,9 @@ import com.deepak.coinroutine.coins.domain.coin.Coin
 import com.deepak.coinroutine.coins.domain.model.CoinModel
 import com.deepak.coinroutine.coins.domain.model.PriceModel
 
+/**
+ * Maps a [CoinItemDto] to a [CoinModel].
+ */
 fun CoinItemDto.toCoinModel() = CoinModel(
     coin = Coin(
         id = uuid,
@@ -17,6 +20,9 @@ fun CoinItemDto.toCoinModel() = CoinModel(
     change = change.toDoubleOrNull() ?: 0.0
 )
 
+/**
+ * Maps a [CoinPriceDto] to a [PriceModel].
+ */
 fun CoinPriceDto.toPriceModel() = PriceModel(
     price = price?.toDoubleOrNull() ?: 0.0,
     timeStamp = timeStamp

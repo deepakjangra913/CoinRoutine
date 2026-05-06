@@ -21,12 +21,23 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 
+/**
+ * Implementation of [PortfolioRepository] that manages portfolio data using a local database
+ * and remote data source.
+ *
+ * @property portfolioDao DAO for portfolio-related database operations.
+ * @property userBalanceDao DAO for user balance-related database operations.
+ * @property coinsRemoteDataSource Remote data source for fetching real-time coin prices.
+ */
 class PortfolioRepositoryImpl(
     private val portfolioDao: PortfolioDao,
     private val userBalanceDao: UserBalanceDao,
     private val coinsRemoteDataSource: KtorCoinsRemoteDataSource,
 ) : PortfolioRepository {
 
+    /**
+     * Initializes the user's cash balance with a default value if not already present in the database.
+     */
     override suspend fun initializeBalance() {
         val currentBalance = userBalanceDao.getCashBalance()
         if (currentBalance == null) {
@@ -38,6 +49,11 @@ class PortfolioRepositoryImpl(
         }
     }
 
+    /**
+     * Provides a real-time flow of the user's portfolio coins, updated with current prices.
+     *
+     * @return A [Flow] of [Result] containing a list of [PortfolioCoinModel].
+     */
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun allPortFolioCoinsFlow(): Flow<Result<List<PortfolioCoinModel>, DataError.Remote>> {
         return portfolioDao.getAllOwnedCoins().flatMapLatest { portfolioCoinEntities ->
@@ -70,6 +86,12 @@ class PortfolioRepositoryImpl(
         }
     }
 
+    /**
+     * Retrieves a specific portfolio coin by its ID, with its current price.
+     *
+     * @param coinId The unique identifier of the coin.
+     * @return A [Result] containing the [PortfolioCoinModel] or null if not in portfolio.
+     */
     override suspend fun getPortfolioCoin(coinId: String): Result<PortfolioCoinModel?, DataError.Remote> {
         coinsRemoteDataSource.getCoinById(coinId)
             .onError { error ->
@@ -87,6 +109,12 @@ class PortfolioRepositoryImpl(
         return Result.Error(DataError.Remote.UNKNOWN)
     }
 
+    /**
+     * Saves a coin to the local portfolio database.
+     *
+     * @param portfolioCoinModel The coin model to save.
+     * @return [Result.Success] on success, or [DataError.Local.DISK_FULL] on error.
+     */
     override suspend fun savePortfolioCoin(portfolioCoinModel: PortfolioCoinModel): EmptyResult<DataError.Local> {
         try {
             portfolioDao.insert(portfolioCoinModel.toPortfolioCoinEntity())
@@ -96,10 +124,20 @@ class PortfolioRepositoryImpl(
         }
     }
 
+    /**
+     * Deletes a coin from the local portfolio database.
+     *
+     * @param coinId The unique identifier of the coin to remove.
+     */
     override suspend fun removeCoinFromPortfolio(coinId: String) {
         portfolioDao.deletePortfolioItem(coinId)
     }
 
+    /**
+     * Calculates the total current value of all coins in the portfolio.
+     *
+     * @return A [Flow] of [Result] containing the total portfolio value in fiat.
+     */
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun calculateTotalPortfolioValue(): Flow<Result<Double, DataError.Remote>> {
         return portfolioDao.getAllOwnedCoins().flatMapLatest { portfolioCoinEntities ->
@@ -128,12 +166,22 @@ class PortfolioRepositoryImpl(
         }
     }
 
+    /**
+     * Provides a flow of the user's cash balance.
+     *
+     * @return A [Flow] of the cash balance.
+     */
     override fun cashBalanceFlow(): Flow<Double> {
         return flow {
             emit(userBalanceDao.getCashBalance() ?: 10000.0)
         }
     }
 
+    /**
+     * Provides a flow of the total user balance (cash + portfolio value).
+     *
+     * @return A [Flow] of [Result] containing the total balance.
+     */
     override fun totalBalanceFlow(): Flow<Result<Double, DataError.Remote>> {
         return combine(
             cashBalanceFlow(),
@@ -151,6 +199,11 @@ class PortfolioRepositoryImpl(
         }
     }
 
+    /**
+     * Updates the user's cash balance in the local database.
+     *
+     * @param newBalance The updated cash balance.
+     */
     override suspend fun updateCashBalance(newBalance: Double) {
         userBalanceDao.updateCashBalance(newBalance)
     }

@@ -1,4 +1,7 @@
 package com.deepak.coinroutine.core.domain
 
-// Just a marker interface to represent an error
+/**
+ * Base interface for all error types in the application.
+ * Serves as a marker interface to provide type safety for error handling.
+ */
 interface Error

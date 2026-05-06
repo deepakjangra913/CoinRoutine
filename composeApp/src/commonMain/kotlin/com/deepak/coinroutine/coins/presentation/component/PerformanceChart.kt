@@ -20,6 +20,14 @@ import androidx.compose.ui.unit.dp
 import com.deepak.coinroutine.coins.presentation.UiChartState
 import com.deepak.coinroutine.theme.LocalCoinRoutineColorsPalette
 
+/**
+ * A custom [Canvas] based chart to display price performance nodes.
+ *
+ * @param modifier Modifier for the chart.
+ * @param nodes List of numerical price points to plot.
+ * @param profitColor Color to use if the performance is positive.
+ * @param lossColor Color to use if the performance is negative.
+ */
 @Composable
 fun PerformanceChart(
     modifier: Modifier = Modifier,
@@ -57,6 +65,12 @@ fun PerformanceChart(
     }
 }
 
+/**
+ * An [AlertDialog] that displays a price chart for a specific coin.
+ *
+ * @param uiChartState The state of the chart to be displayed.
+ * @param onDismiss Callback invoked when the dialog is dismissed.
+ */
 @Composable
 fun CoinChartDialog(
     uiChartState: UiChartState,

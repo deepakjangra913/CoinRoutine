@@ -17,11 +17,21 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 
+/**
+ * ViewModel for the Portfolio screen.
+ * Orchestrates the display of the user's coin holdings and total balance.
+ *
+ * @property portfolioRepository Repository for accessing portfolio and balance data.
+ */
 class PortfolioViewModel(
     private val portfolioRepository: PortfolioRepository
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(PortfolioState(isLoading = true))
+
+    /**
+     * The current UI state of the portfolio, combining data from multiple repository flows.
+     */
     val state: StateFlow<PortfolioState> = combine(
         _state,
         portfolioRepository.allPortFolioCoinsFlow(),
@@ -50,6 +60,9 @@ class PortfolioViewModel(
         initialValue = PortfolioState(isLoading = true)
     )
 
+    /**
+     * Handles the successful retrieval of portfolio data and updates the state.
+     */
     private fun handleSuccessState(
         currentState: PortfolioState,
         portfolioCoins: List<PortfolioCoinModel>,
@@ -74,6 +87,9 @@ class PortfolioViewModel(
         )
     }
 
+    /**
+     * Handles errors during portfolio data retrieval.
+     */
     private fun handleErrorState(
         currentState: PortfolioState,
         error: DataError
@@ -84,6 +100,9 @@ class PortfolioViewModel(
         )
     }
 
+    /**
+     * Maps a [PortfolioCoinModel] to its UI representation [UiPortfolioCoinItem].
+     */
     private fun PortfolioCoinModel.toUiPortfolioCoinItem(): UiPortfolioCoinItem {
         return UiPortfolioCoinItem(
             id = coin.id,

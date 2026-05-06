@@ -7,10 +7,23 @@ import com.deepak.coinroutine.core.domain.Result
 import com.deepak.coinroutine.portfolio.domain.PortfolioRepository
 import kotlinx.coroutines.flow.first
 
+/**
+ * Use case for selling a cryptocurrency from the user's portfolio.
+ *
+ * @property portfolioRepository The repository to manage portfolio data and balance.
+ */
 class SellCoinUseCase(
     private val portfolioRepository: PortfolioRepository
 ) {
 
+    /**
+     * Executes the sell transaction.
+     *
+     * @param coin The coin to be sold.
+     * @param amountInFiat The amount of the coin to sell, specified in fiat currency.
+     * @param price The current market price of the coin.
+     * @return An [EmptyResult] indicating success or [DataError] on failure (e.g., insufficient funds).
+     */
     suspend operator fun invoke(
         coin: Coin,
         amountInFiat: Double,

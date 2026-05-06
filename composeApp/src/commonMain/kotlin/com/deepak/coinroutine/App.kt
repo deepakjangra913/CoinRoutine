@@ -9,6 +9,10 @@ import com.deepak.coinroutine.coins.presentation.CoinsListScreen
 import com.deepak.coinroutine.theme.CoinRoutineTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
+/**
+ * The main entry point for the Compose Multiplatform application.
+ * Sets up the theme and the root navigation/screen structure.
+ */
 @Composable
 @Preview
 fun App() {

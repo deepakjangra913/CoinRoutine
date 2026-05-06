@@ -19,6 +19,14 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+/**
+ * ViewModel for the Sell screen, responsible for managing the state and logic
+ * of selling a cryptocurrency from the user's portfolio.
+ *
+ * @property getCoinDetailsUseCase Use case to fetch details for a specific coin.
+ * @property portfolioRepository Repository for accessing portfolio data.
+ * @property sellCoinUseCase Use case for executing the sell transaction.
+ */
 class SellViewModel(
     private val getCoinDetailsUseCase: GetCoinDetailsUseCase,
     private val portfolioRepository: PortfolioRepository,
@@ -29,6 +37,11 @@ class SellViewModel(
 
     private val _amount = MutableStateFlow("")
     private val _state = MutableStateFlow(TradeState())
+
+    /**
+     * The current UI state of the Sell screen, including the coin details,
+     * available amount, and any errors.
+     */
     val state = combine(
         _state, _amount
     ) { state, amount ->
@@ -57,10 +70,20 @@ class SellViewModel(
         initialValue = TradeState(isLoading = true)
     )
 
+    /**
+     * Updates the amount to be sold.
+     *
+     * @param amount The new amount string entered by the user.
+     */
     fun onAmountChanged(amount: String) {
         _amount.value = amount
     }
 
+    /**
+     * Fetches coin details and calculates the available fiat value for sale.
+     *
+     * @param ownedAmountInUnit The amount of the coin owned by the user.
+     */
     private suspend fun getCoinDetails(ownedAmountInUnit: Double) {
         when (val coinResponse = getCoinDetailsUseCase.execute(tempCoinId)) {
             is Result.Success -> {
@@ -90,6 +113,9 @@ class SellViewModel(
         }
     }
 
+    /**
+     * Handles the sell action when the user clicks the sell button.
+     */
     fun onSellClicked() {
         val tradeCoin = state.value.coin ?: return
         viewModelScope.launch {

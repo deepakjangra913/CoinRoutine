@@ -19,8 +19,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -32,6 +32,11 @@ import com.deepak.coinroutine.coins.presentation.component.CoinChartDialog
 import com.deepak.coinroutine.theme.LocalCoinRoutineColorsPalette
 import org.koin.compose.viewmodel.koinViewModel
 
+/**
+ * Screen that displays a list of cryptocurrencies.
+ *
+ * @param onCoinClicked Callback invoked when a coin item is clicked.
+ */
 @Composable
 fun CoinsListScreen(
     onCoinClicked: (String) -> Unit
@@ -52,6 +57,14 @@ fun CoinsListScreen(
     )
 }
 
+/**
+ * Main content of the Coins List screen.
+ *
+ * @param state Current UI state.
+ * @param onDismissChart Callback to dismiss the coin chart dialog.
+ * @param onCoinLongPressed Callback for long pressing a coin item.
+ * @param onCoinClicked Callback for clicking a coin item.
+ */
 @Composable
 fun CoinsListContent(
     state: CoinsState,
@@ -79,6 +92,13 @@ fun CoinsListContent(
     }
 }
 
+/**
+ * Displays a lazy list of coins.
+ *
+ * @param coins List of coins to display.
+ * @param onCoinLongPressed Callback for long pressing a coin item.
+ * @param onCoinClicked Callback for clicking a coin item.
+ */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CoinsList(
@@ -119,6 +139,13 @@ fun CoinsList(
     }
 }
 
+/**
+ * Individual coin list item component.
+ *
+ * @param coin UI model for the coin.
+ * @param onCoinLongPressed Callback for long pressing the item.
+ * @param onCoinClicked Callback for clicking the item.
+ */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CoinListItem(
@@ -191,5 +218,3 @@ fun CoinListItem(
         }
     }
 }
-
-
