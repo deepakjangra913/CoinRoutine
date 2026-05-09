@@ -101,7 +101,10 @@ fun TradeScreen(
             color = MaterialTheme.colorScheme.onBackground
         )
 
-        // TODO : TEXT FIELD
+        CenteredDollarTextField(
+            amountText = state.amount,
+            onAmountChanged = onAmountChanged
+        )
 
         Text(
             text = state.availableAmount,

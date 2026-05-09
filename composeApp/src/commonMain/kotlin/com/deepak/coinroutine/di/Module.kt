@@ -15,6 +15,8 @@ import com.deepak.coinroutine.portfolio.domain.PortfolioRepository
 import com.deepak.coinroutine.portfolio.presentation.PortfolioViewModel
 import com.deepak.coinroutine.trade.domain.BuyCoinUseCase
 import com.deepak.coinroutine.trade.domain.SellCoinUseCase
+import com.deepak.coinroutine.trade.presentation.buy.BuyViewModel
+import com.deepak.coinroutine.trade.presentation.sell.SellViewModel
 import org.koin.core.context.startKoin
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.singleOf
@@ -61,4 +63,7 @@ val sharedModule = module {
     // trade
     singleOf(::BuyCoinUseCase)
     singleOf(::SellCoinUseCase)
+
+    viewModel { BuyViewModel(get(), get(), get()) }
+    viewModel { SellViewModel(get(), get(), get()) }
 }
