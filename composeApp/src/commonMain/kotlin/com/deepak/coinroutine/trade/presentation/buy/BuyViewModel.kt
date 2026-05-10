@@ -30,10 +30,9 @@ import kotlinx.coroutines.launch
 class BuyViewModel(
     private val getCoinDetailsUseCase: GetCoinDetailsUseCase,
     private val portfolioRepository: PortfolioRepository,
-    private val buyCoinUseCase: BuyCoinUseCase
+    private val buyCoinUseCase: BuyCoinUseCase,
+    private val coinId: String,
 ) : ViewModel() {
-
-    private val tempCoinId = "1" //TODO: will replace by nav args
     private val _amount = MutableStateFlow("")
     private val _state = MutableStateFlow(TradeState())
 
@@ -59,7 +58,7 @@ class BuyViewModel(
      * @param balance The current available cash balance.
      */
     private suspend fun getCoinDetails(balance: Double) {
-        when (val coinResponse = getCoinDetailsUseCase.execute(tempCoinId)) {
+        when (val coinResponse = getCoinDetailsUseCase.execute(coinId)) {
             is Result.Success -> {
                 _state.update {
                     it.copy(
