@@ -1,12 +1,20 @@
 package com.deepak.coinroutine
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.deepak.coinroutine.coins.presentation.CoinsListScreen
+import com.deepak.coinroutine.core.navigation.Buy
+import com.deepak.coinroutine.core.navigation.Coins
+import com.deepak.coinroutine.core.navigation.Portfolio
+import com.deepak.coinroutine.core.navigation.Sell
+import com.deepak.coinroutine.portfolio.presentation.PortfolioScreen
 import com.deepak.coinroutine.theme.CoinRoutineTheme
+import com.deepak.coinroutine.trade.presentation.buy.BuyScreen
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 /**
@@ -16,13 +24,53 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Composable
 @Preview
 fun App() {
+    val navController: NavHostController = rememberNavController()
     CoinRoutineTheme {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .statusBarsPadding()
+        NavHost(
+            navController = navController,
+            startDestination = Portfolio,
+            modifier = Modifier.fillMaxSize()
         ) {
-            CoinsListScreen {}
+            composable<Portfolio> {
+                PortfolioScreen(
+                    onCoinItemClicked = { coinId -> // TODO: will be used later
+                        navController.navigate(Sell)
+                    },
+                    onDiscoverCoinsClicked = {
+                        navController.navigate(Coins)
+                    }
+                )
+            }
+
+            composable<Coins> {
+                CoinsListScreen(
+                    onCoinClicked = { coinId ->
+                        navController.navigate(Buy)
+                    }
+                )
+            }
+
+            composable<Buy> { navBackStackEntry ->
+                BuyScreen(
+                    coinId = "todo",
+                    navigateToPortfolio = {
+                        navController.navigate(Portfolio) {
+                            popUpTo(Portfolio) { inclusive = true }
+                        }
+                    }
+                )
+            }
+
+            composable<Sell> { navBackStackEntry ->
+                BuyScreen(
+                    coinId = "todo",
+                    navigateToPortfolio = {
+                        navController.navigate(Portfolio) {
+                            popUpTo(Portfolio) { inclusive = true }
+                        }
+                    }
+                )
+            }
         }
     }
 }
