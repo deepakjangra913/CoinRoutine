@@ -16,6 +16,7 @@ import com.deepak.coinroutine.core.navigation.Sell
 import com.deepak.coinroutine.portfolio.presentation.PortfolioScreen
 import com.deepak.coinroutine.theme.CoinRoutineTheme
 import com.deepak.coinroutine.trade.presentation.buy.BuyScreen
+import com.deepak.coinroutine.trade.presentation.sell.SellScreen
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 /**
@@ -65,7 +66,7 @@ fun App() {
 
             composable<Sell> { navBackStackEntry ->
                 val coinId: String = navBackStackEntry.toRoute<Sell>().coinId
-                BuyScreen(
+                SellScreen(
                     coinId = coinId,
                     navigateToPortfolio = {
                         navController.navigate(Portfolio) {

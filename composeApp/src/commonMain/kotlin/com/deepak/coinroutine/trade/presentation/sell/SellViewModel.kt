@@ -11,10 +11,12 @@ import com.deepak.coinroutine.trade.domain.SellCoinUseCase
 import com.deepak.coinroutine.trade.mapper.toCoin
 import com.deepak.coinroutine.trade.presentation.common.TradeState
 import com.deepak.coinroutine.trade.presentation.common.UiTradeCoinItem
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -36,6 +38,9 @@ class SellViewModel(
 
     private val _amount = MutableStateFlow("")
     private val _state = MutableStateFlow(TradeState())
+
+    private val _events = Channel<SellEvents>(capacity = Channel.BUFFERED)
+    val events = _events.receiveAsFlow()
 
     /**
      * The current UI state of the Sell screen, including the coin details,
@@ -127,7 +132,7 @@ class SellViewModel(
 
             when (sellCoinResponse) {
                 is Result.Success -> {
-                    // TODO (Navigate to Listing Screen)
+                    _events.send(SellEvents.SellSuccess)
                 }
 
                 is Result.Error -> {
@@ -141,4 +146,8 @@ class SellViewModel(
             }
         }
     }
+}
+
+sealed interface SellEvents {
+    data object SellSuccess : SellEvents
 }
