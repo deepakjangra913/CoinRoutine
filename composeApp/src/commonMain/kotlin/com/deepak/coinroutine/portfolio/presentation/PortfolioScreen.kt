@@ -118,7 +118,6 @@ private fun PortfolioCoinsList(
                     color = MaterialTheme.colorScheme.onBackground,
                     fontSize = MaterialTheme.typography.titleLarge.fontSize,
                     modifier = Modifier
-                        .weight(1f)
                         .padding(16.dp)
                 )
 
@@ -195,20 +194,45 @@ private fun CoinListItem(
 
         Spacer(modifier = Modifier.width(16.dp))
 
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(
-                text = coin.amountInFiatText,
-                color = MaterialTheme.colorScheme.onBackground,
-                fontSize = MaterialTheme.typography.titleMedium.fontSize
-            )
+        Column(modifier = Modifier.fillMaxWidth()) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = coin.name,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    fontSize = MaterialTheme.typography.titleMedium.fontSize
+                )
+
+                Text(
+                    text = coin.amountInFiatText,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    fontSize = MaterialTheme.typography.titleMedium.fontSize
+                )
+            }
+
 
             Spacer(modifier = Modifier.width(4.dp))
 
-            Text(
-                text = coin.performancePercentText,
-                color = if (coin.isPositive) LocalCoinRoutineColorsPalette.current.profitGreen else LocalCoinRoutineColorsPalette.current.lossRed,
-                fontSize = MaterialTheme.typography.titleSmall.fontSize
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = coin.amountInUnitText,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    fontSize = MaterialTheme.typography.titleMedium.fontSize
+                )
+
+                Text(
+                    text = coin.performancePercentText,
+                    color = if (coin.isPositive) LocalCoinRoutineColorsPalette.current.profitGreen else LocalCoinRoutineColorsPalette.current.lossRed,
+                    fontSize = MaterialTheme.typography.titleSmall.fontSize
+                )
+            }
         }
     }
 }

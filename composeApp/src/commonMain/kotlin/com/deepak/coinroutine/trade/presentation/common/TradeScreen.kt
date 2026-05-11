@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -53,6 +54,7 @@ fun TradeScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
+            .imePadding()
             .background(MaterialTheme.colorScheme.background),
         contentAlignment = Alignment.Center
     ) {
@@ -88,39 +90,40 @@ fun TradeScreen(
                     modifier = Modifier.padding(4.dp)
                 )
             }
-        }
 
-        Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
-        Text(
-            text = when (tradeType) {
-                TradeType.BUY -> "Buy Amount"
-                TradeType.SELL -> "Sell Amount"
-            },
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onBackground
-        )
-
-        CenteredDollarTextField(
-            amountText = state.amount,
-            onAmountChanged = onAmountChanged
-        )
-
-        Text(
-            text = state.availableAmount,
-            style = MaterialTheme.typography.labelLarge,
-            color = MaterialTheme.colorScheme.onBackground,
-            modifier = Modifier.padding(4.dp)
-        )
-
-        if (state.error != null) {
             Text(
-                text = stringResource(state.error),
+                text = when (tradeType) {
+                    TradeType.BUY -> "Buy Amount"
+                    TradeType.SELL -> "Sell Amount"
+                },
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onBackground
+            )
+
+            CenteredDollarTextField(
+                amountText = state.amount,
+                onAmountChanged = onAmountChanged
+            )
+
+            Text(
+                text = state.availableAmount,
                 style = MaterialTheme.typography.labelLarge,
-                color = LocalCoinRoutineColorsPalette.current.lossRed,
+                color = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier.padding(4.dp)
             )
+
+            if (state.error != null) {
+                Text(
+                    text = stringResource(state.error),
+                    style = MaterialTheme.typography.labelLarge,
+                    color = LocalCoinRoutineColorsPalette.current.lossRed,
+                    modifier = Modifier.padding(4.dp)
+                )
+            }
         }
+
         Button(
             onClick = onSubmitClicked,
             colors = ButtonDefaults.buttonColors(
@@ -130,7 +133,8 @@ fun TradeScreen(
                 }
             ),
             contentPadding = PaddingValues(horizontal = 64.dp),
-            modifier = Modifier.align(alignment = Alignment.BottomCenter).padding(bottom = 32.dp)
+            modifier = Modifier.align(alignment = Alignment.BottomCenter)
+                .padding(bottom = 32.dp)
         ) {
             Text(
                 text = when (tradeType) {
@@ -165,7 +169,7 @@ fun CenteredDollarTextField(
         value = displayText,
         onValueChange = { newValue ->
             val trimmed = newValue.trimStart('0').trim { it.isDigit().not() }
-            if (trimmed.isEmpty() || trimmed.toInt() <= 1000) {
+            if (trimmed.isEmpty() || trimmed.toInt() <= 10000) {
                 onAmountChanged(trimmed)
             }
         },

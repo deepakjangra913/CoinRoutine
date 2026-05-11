@@ -35,7 +35,7 @@ interface PortfolioDao {
      * @return The [PortfolioCoinEntity] matching the [coinId].
      */
     @Query("SELECT * FROM PortfolioCoinEntity WHERE coinId = :coinId")
-    suspend fun getCoinById(coinId: String): PortfolioCoinEntity
+    suspend fun getCoinById(coinId: String): PortfolioCoinEntity?
 
     /**
      * Deletes a coin from the portfolio by its unique identifier.

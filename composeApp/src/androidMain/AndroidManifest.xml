@@ -13,6 +13,8 @@
         android:theme="@android:style/Theme.Material.Light.NoActionBar">
         <activity
             android:exported="true"
+            android:windowSoftInputMode="adjustResize"
+            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden|mnc|colorMode|density|fontScale|fontWeightAdjustment"
             android:name="com.deepak.coinroutine.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
