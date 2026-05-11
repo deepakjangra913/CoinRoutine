@@ -10,10 +10,13 @@ import com.deepak.coinroutine.core.util.formatPercentage
 import com.deepak.coinroutine.core.util.toUiText
 import com.deepak.coinroutine.portfolio.domain.PortfolioCoinModel
 import com.deepak.coinroutine.portfolio.domain.PortfolioRepository
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 
@@ -24,7 +27,8 @@ import kotlinx.coroutines.flow.stateIn
  * @property portfolioRepository Repository for accessing portfolio and balance data.
  */
 class PortfolioViewModel(
-    private val portfolioRepository: PortfolioRepository
+    private val portfolioRepository: PortfolioRepository,
+    private val coroutineDispatcher: CoroutineDispatcher = Dispatchers.Default
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(PortfolioState(isLoading = true))
@@ -54,7 +58,9 @@ class PortfolioViewModel(
         }
     }.onStart {
         portfolioRepository.initializeBalance()
-    }.stateIn(
+    }. flowOn(
+        coroutineDispatcher
+    ).stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(),
         initialValue = PortfolioState(isLoading = true)
