@@ -71,6 +71,10 @@ class FakePortfolioRepository : PortfolioRepository {
         _cashBalance.value = newBalance
     }
 
+    fun simulateError() {
+        _data.value = Result.Error(DataError.Remote.SERVER)
+    }
+
     companion object {
         val fakeCoin = Coin(
             id = "fakeId",

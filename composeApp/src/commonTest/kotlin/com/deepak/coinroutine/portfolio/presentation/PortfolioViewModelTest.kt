@@ -1,7 +1,9 @@
 package com.deepak.coinroutine.portfolio.presentation
 
 import app.cash.turbine.test
+import com.deepak.coinroutine.core.domain.DataError
 import com.deepak.coinroutine.core.util.formatFiat
+import com.deepak.coinroutine.core.util.toUiText
 import com.deepak.coinroutine.portfolio.data.FakePortfolioRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
@@ -65,4 +67,16 @@ class PortfolioViewModelTest {
             cancelAndIgnoreRemainingEvents()
         }
     }
+
+    @Test
+    fun `loading state and error message update on failure`() = runTest {
+        portfolioRepository.simulateError()
+
+        viewModel.state.test {
+            val errorState = awaitItem()
+            assertFalse(errorState.isLoading)
+            assertEquals(DataError.Remote.SERVER.toUiText(), errorState.error)
+        }
+    }
+
 }
