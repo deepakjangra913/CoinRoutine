@@ -13,6 +13,26 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 
+/**
+ * Fake implementation of [PortfolioRepository] used for unit testing.
+ *
+ * This repository simulates portfolio-related operations entirely in memory
+ * using [MutableStateFlow].
+ *
+ * Features:
+ * - Emits fake portfolio coin updates
+ * - Simulates portfolio value calculations
+ * - Simulates cash balance updates
+ * - Supports error simulation for testing failure scenarios
+ *
+ * This fake repository is useful for:
+ * - ViewModel testing
+ * - Flow testing
+ * - Reactive state testing
+ * - Error handling verification
+ *
+ * No real database or network operations are performed.
+ */
 class FakePortfolioRepository : PortfolioRepository {
 
     private val _data = MutableStateFlow<Result<List<PortfolioCoinModel>, DataError.Remote>>(
@@ -20,7 +40,7 @@ class FakePortfolioRepository : PortfolioRepository {
     )
 
     private val _cashBalance = MutableStateFlow(cashBalance)
-    private val _portfolioValue = MutableStateFlow(portfolioVlaue)
+    private val _portfolioValue = MutableStateFlow(portfolioValue)
 
     private val listOfCoins = mutableListOf<PortfolioCoinModel>()
 
@@ -92,6 +112,6 @@ class FakePortfolioRepository : PortfolioRepository {
         )
 
         val cashBalance = 10000.0
-        val portfolioVlaue = 0.0
+        val portfolioValue = 0.0
     }
 }
