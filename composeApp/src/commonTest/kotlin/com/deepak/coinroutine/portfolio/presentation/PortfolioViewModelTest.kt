@@ -5,9 +5,11 @@ import com.deepak.coinroutine.core.domain.DataError
 import com.deepak.coinroutine.core.util.formatFiat
 import com.deepak.coinroutine.core.util.toUiText
 import com.deepak.coinroutine.portfolio.data.FakePortfolioRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.test.setMain
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -18,14 +20,16 @@ class PortfolioViewModelTest {
 
     private lateinit var viewModel: PortfolioViewModel
     private lateinit var portfolioRepository: FakePortfolioRepository
+    private val testDispatcher = StandardTestDispatcher()
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @BeforeTest
     fun setup() {
+        Dispatchers.setMain(testDispatcher)
         portfolioRepository = FakePortfolioRepository()
         viewModel = PortfolioViewModel(
             portfolioRepository = portfolioRepository,
-            coroutineDispatcher = UnconfinedTestDispatcher()
+            coroutineDispatcher = testDispatcher
         )
     }
 
@@ -37,8 +41,6 @@ class PortfolioViewModelTest {
 
             val portfolioCoin = FakePortfolioRepository.portfolioCoin
             portfolioRepository.savePortfolioCoin(portfolioCoin)
-
-            awaitItem() // Ignore the first emission
 
             val updatedState = awaitItem()
             assertTrue(updatedState.coins.isNotEmpty())

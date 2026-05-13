@@ -37,7 +37,7 @@ class FakePortfolioRepository : PortfolioRepository {
     }
 
     override suspend fun savePortfolioCoin(portfolioCoinModel: PortfolioCoinModel): EmptyResult<DataError.Local> {
-        listOfCoins.add(portfolioCoin)
+        listOfCoins.add(portfolioCoinModel)
         _portfolioValue.value = listOfCoins.sumOf { it.ownedAmountInFiat }
         _data.value = Result.Success(listOfCoins)
         return Result.Success(Unit)

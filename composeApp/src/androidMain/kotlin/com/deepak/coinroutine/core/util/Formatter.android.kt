@@ -1,6 +1,6 @@
 package com.deepak.coinroutine.core.util
 
-import android.icu.text.DecimalFormat
+import java.text.DecimalFormat
 
 actual fun formatFiat(amount: Double, showDecimal: Boolean): String {
     val formatter = when {
