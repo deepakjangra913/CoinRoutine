@@ -7,7 +7,7 @@ import com.deepak.coinroutine.core.util.toUiText
 import com.deepak.coinroutine.portfolio.data.FakePortfolioRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import kotlin.test.BeforeTest
@@ -20,7 +20,8 @@ class PortfolioViewModelTest {
 
     private lateinit var viewModel: PortfolioViewModel
     private lateinit var portfolioRepository: FakePortfolioRepository
-    private val testDispatcher = StandardTestDispatcher()
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private val testDispatcher = UnconfinedTestDispatcher()
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @BeforeTest
@@ -42,6 +43,7 @@ class PortfolioViewModelTest {
             val portfolioCoin = FakePortfolioRepository.portfolioCoin
             portfolioRepository.savePortfolioCoin(portfolioCoin)
 
+            awaitItem() // Ignore the first emission
             val updatedState = awaitItem()
             assertTrue(updatedState.coins.isNotEmpty())
             assertFalse(updatedState.isLoading)
@@ -56,13 +58,12 @@ class PortfolioViewModelTest {
     fun `Portfolio value updates when a coin is added`() = runTest {
         viewModel.state.test {
             val initialState = awaitItem()
-            assertEquals(initialState.portfolioValue, formatFiat(10000.0))
+            assertEquals( formatFiat(10000.0),initialState.portfolioValue,)
 
             val portfolioCoin = FakePortfolioRepository.portfolioCoin.copy(
                 ownedAmount = 50.0,
                 ownedAmountInFiat = 1000.0
             )
-
             portfolioRepository.savePortfolioCoin(portfolioCoin)
             val updatedState = awaitItem()
             assertEquals(formatFiat(11000.0), updatedState.portfolioValue)
@@ -80,5 +81,4 @@ class PortfolioViewModelTest {
             assertEquals(DataError.Remote.SERVER.toUiText(), errorState.error)
         }
     }
-
 }
