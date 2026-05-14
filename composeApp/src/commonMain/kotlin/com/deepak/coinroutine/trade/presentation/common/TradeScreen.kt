@@ -120,7 +120,7 @@ fun TradeScreen(
                     text = stringResource(state.error),
                     style = MaterialTheme.typography.labelLarge,
                     color = LocalCoinRoutineColorsPalette.current.lossRed,
-                    modifier = Modifier.padding(4.dp)
+                    modifier = Modifier.padding(4.dp).testTag("trade_error")
                 )
             }
         }

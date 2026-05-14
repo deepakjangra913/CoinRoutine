@@ -6,6 +6,8 @@ import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.runComposeUiTest
+import coinroutine.composeapp.generated.resources.Res
+import coinroutine.composeapp.generated.resources.error_unknown
 import com.deepak.coinroutine.trade.presentation.common.TradeScreen
 import com.deepak.coinroutine.trade.presentation.common.TradeState
 import com.deepak.coinroutine.trade.presentation.common.TradeType
@@ -77,5 +79,35 @@ class BuyScreenTest {
 
         onNodeWithTag("trade_screen_coin_name").assertExists()
         onNodeWithTag("trade_screen_coin_name").assertTextEquals("Bitcoin")
+    }
+
+    @OptIn(ExperimentalTestApi::class)
+    @Test
+    fun checkErrorIsShownProperly() = runComposeUiTest {
+        val state = TradeState(
+            coin = UiTradeCoinItem(
+                id = "bitcoin",
+                name = "Bitcoin",
+                symbol = "BTC",
+                iconUrl = "url",
+                price = 50000.0
+            ),
+            error = Res.string.error_unknown
+        )
+        setContent {
+            TradeScreen(
+                state = state,
+                tradeType = TradeType.BUY,
+                onAmountChanged = {
+
+                },
+                onSubmitClicked = {
+
+                }
+            )
+        }
+
+        onNodeWithTag("trade_error").assertExists()
+        onNodeWithTag("trade_error").assertIsDisplayed()
     }
 }
