@@ -25,6 +25,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import com.deepak.coinroutine.Platform
 import com.deepak.coinroutine.core.biometric.BiometricAuthNotAvailable
@@ -32,6 +33,7 @@ import com.deepak.coinroutine.core.biometric.getBiometricAuthenticator
 import com.deepak.coinroutine.core.biometric.getPlatformContext
 import com.deepak.coinroutine.platform
 import com.deepak.coinroutine.theme.LocalCoinRoutineColorsPalette
+import com.deepak.coinroutine.theme.UbuntuFontFamily
 import kotlinx.coroutines.launch
 
 @Composable
@@ -66,6 +68,9 @@ fun BiometricScreen(
             Text(
                 text = "CoinRoutine",
                 color = MaterialTheme.colorScheme.onBackground,
+                style = TextStyle(
+                    fontFamily = UbuntuFontFamily()
+                ),
                 fontSize = MaterialTheme.typography.displayMedium.fontSize
             )
             Spacer(modifier = Modifier.height(4.dp))
@@ -94,7 +99,7 @@ fun BiometricScreen(
                         } catch (e: Exception) {
                             authError = e.message
                             if (e.message == BiometricAuthNotAvailable.BIOAUTH_NOT_AVAILABLE.toString()) {
-                                authError = when(platform) {
+                                authError = when (platform) {
                                     Platform.Android -> {
                                         "Biometric is not available on your device!"
                                     }
