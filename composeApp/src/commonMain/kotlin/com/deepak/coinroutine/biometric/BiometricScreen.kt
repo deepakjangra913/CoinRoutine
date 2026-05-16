@@ -25,13 +25,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import com.deepak.coinroutine.core.biometric.BiometricAuthNotAvailable
 import com.deepak.coinroutine.core.biometric.getBiometricAuthenticator
 import com.deepak.coinroutine.core.biometric.getPlatformContext
 import com.deepak.coinroutine.theme.LocalCoinRoutineColorsPalette
-import dev.coinroutine.app.theme.UbuntuFontFamily
 import kotlinx.coroutines.launch
 
 @Composable
@@ -66,9 +64,6 @@ fun BiometricScreen(
             Text(
                 text = "CoinRoutine",
                 color = MaterialTheme.colorScheme.onBackground,
-                style = TextStyle(
-                    fontFamily = UbuntuFontFamily()
-                ),
                 fontSize = MaterialTheme.typography.displayMedium.fontSize
             )
             Spacer(modifier = Modifier.height(4.dp))
