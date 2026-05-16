@@ -3,6 +3,7 @@ package com.deepak.coinroutine.core.biometric
 import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
+import com.deepak.coinroutine.biometric.AndroidBiometricAuthenticator
 
 class AndroidPlatformContext(val context: Context) : PlatformContext
 
@@ -13,5 +14,6 @@ actual fun getPlatformContext(): PlatformContext {
 }
 
 actual fun getBiometricAuthenticator(context: PlatformContext): BiometricAuthenticator {
-    val androidContext = (context as AndroidPlatformContext)
+    val androidContext = (context as AndroidPlatformContext).context
+    return AndroidBiometricAuthenticator(androidContext)
 }

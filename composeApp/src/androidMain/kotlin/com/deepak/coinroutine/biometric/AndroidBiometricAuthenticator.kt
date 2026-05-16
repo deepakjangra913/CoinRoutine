@@ -5,6 +5,8 @@ import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
+import com.deepak.coinroutine.core.biometric.BiometricAuthNotAvailable
+import com.deepak.coinroutine.core.biometric.BiometricAuthenticator
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException

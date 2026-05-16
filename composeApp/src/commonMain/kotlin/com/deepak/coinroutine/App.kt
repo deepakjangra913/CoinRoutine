@@ -8,7 +8,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import com.deepak.coinroutine.biometric.BiometricScreen
 import com.deepak.coinroutine.coins.presentation.CoinsListScreen
+import com.deepak.coinroutine.core.navigation.Biometric
 import com.deepak.coinroutine.core.navigation.Buy
 import com.deepak.coinroutine.core.navigation.Coins
 import com.deepak.coinroutine.core.navigation.Portfolio
@@ -30,9 +32,14 @@ fun App() {
     CoinRoutineTheme {
         NavHost(
             navController = navController,
-            startDestination = Portfolio,
+            startDestination = Biometric,
             modifier = Modifier.fillMaxSize()
         ) {
+            composable<Biometric>{
+                BiometricScreen {
+                    navController.navigate(Portfolio)
+                }
+            }
             composable<Portfolio> {
                 PortfolioScreen(
                     onCoinItemClicked = { coinId ->
