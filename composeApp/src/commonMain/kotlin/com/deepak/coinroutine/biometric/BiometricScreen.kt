@@ -45,8 +45,10 @@ fun BiometricScreen(
     val coroutineScope = rememberCoroutineScope()
     var authError by remember { mutableStateOf<String?>(null) }
 
+    // Animation for Biometric icon
     val infiniteTransition = rememberInfiniteTransition()
 
+    // Adding scale for animation
     val scale by infiniteTransition.animateFloat(
         initialValue = 1f,
         targetValue = 1.05f,
